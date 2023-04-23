@@ -1,5 +1,6 @@
 import { createFullDocumentCanvas } from "@sanjo/canvas"
 import { randomColor } from "./unnamed/randomColor.js"
+import { animate } from '@sanjo/animate'
 
 const { context, canvas } = createFullDocumentCanvas()
 document.body.append(canvas)
@@ -11,28 +12,35 @@ function createRowDrawing(y, color) {
   let xBefore = null
   let yBefore = null
 
-  let x = randomInteger(0, canvas.width)
+  let x = randomInteger(0, canvas.width - WIDTH)
 
-  let xOffset = randomSign() * WIDTH
+  const OFFSET = 1
+  let xOffset = randomSign() * OFFSET
 
-  function draw() {
+  function draw(elapsedTime) {
     if (typeof xBefore === "number" && typeof yBefore === "number") {
-      context.clearRect(xBefore, yBefore, WIDTH, HEIGHT)
+      context.clearRect(Math.round(xBefore), yBefore, WIDTH, HEIGHT)
+    }
+
+    if (elapsedTime) {
+      x += 0.025 * elapsedTime * xOffset
+      if (x < 0) {
+        xOffset = OFFSET
+        x += xOffset
+      }
+      if (x + WIDTH >= canvas.width) {
+        xOffset = -OFFSET
+        x += xOffset
+      }
     }
 
     context.beginPath()
     context.fillStyle = color
-    context.rect(x, y, WIDTH, HEIGHT)
+    context.rect(Math.round(x), y, WIDTH, HEIGHT)
     context.fill()
 
     xBefore = x
     yBefore = y
-
-    x += xOffset
-    if (x < 0 || x + WIDTH >= canvas.width) {
-      xOffset = -xOffset
-      x += xOffset
-    }
   }
 
   return draw
@@ -41,17 +49,20 @@ function createRowDrawing(y, color) {
 const rows = []
 for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
   const { hue, saturation, lightness } = randomColor()
-  const row = createRowDrawing(y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`)
+  const row = createRowDrawing(
+    y,
+    `hsl(${ hue }deg ${ saturation * 100 }% ${ lightness * 100 }%)`,
+  )
   rows.push(row)
 }
 
-setTimeout(function () {
+animate(function (elapsedTime) {
   for (const drawRow of rows) {
-    drawRow()
+    drawRow(elapsedTime)
   }
   setInterval(function () {
     for (const drawRow of rows) {
-      drawRow()
+      drawRow(elapsedTime)
     }
   }, 50)
 
@@ -76,7 +87,7 @@ setTimeout(function () {
   //   )
   //   context.fill()
   // }, 60000 / (128 / 2))
-}, 500)
+})
 
 function randomInteger(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1))

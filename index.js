@@ -3999,6 +3999,57 @@ module.exports.formatError = function (err) {
 
 /***/ }),
 
+/***/ "./node_modules/@sanjo/animate/animate.js":
+/*!************************************************!*\
+  !*** ./node_modules/@sanjo/animate/animate.js ***!
+  \************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "animate": () => (/* binding */ animate)
+/* harmony export */ });
+function animate(fn) {
+    let lastFrameTime;
+    let shouldStop = false;
+    function stop() {
+        shouldStop = true;
+    }
+    function onFrame() {
+        if (!shouldStop) {
+            const currentFrameTime = Date.now();
+            const elapsedTime = currentFrameTime - (lastFrameTime || currentFrameTime);
+            fn(elapsedTime);
+            lastFrameTime = currentFrameTime;
+            requestNextAnimationFrame();
+        }
+    }
+    function requestNextAnimationFrame() {
+        requestAnimationFrame(onFrame);
+    }
+    requestNextAnimationFrame();
+    return { stop };
+}
+//# sourceMappingURL=animate.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@sanjo/animate/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/@sanjo/animate/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "animate": () => (/* reexport safe */ _animate_js__WEBPACK_IMPORTED_MODULE_0__.animate)
+/* harmony export */ });
+/* harmony import */ var _animate_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./animate.js */ "./node_modules/@sanjo/animate/animate.js");
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "./node_modules/@sanjo/canvas/addDevicePixelRatioChangeListener.js":
 /*!*************************************************************************!*\
   !*** ./node_modules/@sanjo/canvas/addDevicePixelRatioChangeListener.js ***!
@@ -4199,6 +4250,8 @@ function noop() { }
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
 /* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
+/* harmony import */ var _sanjo_animate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @sanjo/animate */ "./node_modules/@sanjo/animate/index.js");
+
 
 
 const {
@@ -4211,23 +4264,30 @@ const HEIGHT = 50;
 function createRowDrawing(y, color) {
   let xBefore = null;
   let yBefore = null;
-  let x = randomInteger(0, canvas.width);
-  let xOffset = randomSign() * WIDTH;
-  function draw() {
+  let x = randomInteger(0, canvas.width - WIDTH);
+  const OFFSET = 1;
+  let xOffset = randomSign() * OFFSET;
+  function draw(elapsedTime) {
     if (typeof xBefore === "number" && typeof yBefore === "number") {
-      context.clearRect(xBefore, yBefore, WIDTH, HEIGHT);
+      context.clearRect(Math.round(xBefore), yBefore, WIDTH, HEIGHT);
+    }
+    if (elapsedTime) {
+      x += 0.025 * elapsedTime * xOffset;
+      if (x < 0) {
+        xOffset = OFFSET;
+        x += xOffset;
+      }
+      if (x + WIDTH >= canvas.width) {
+        xOffset = -OFFSET;
+        x += xOffset;
+      }
     }
     context.beginPath();
     context.fillStyle = color;
-    context.rect(x, y, WIDTH, HEIGHT);
+    context.rect(Math.round(x), y, WIDTH, HEIGHT);
     context.fill();
     xBefore = x;
     yBefore = y;
-    x += xOffset;
-    if (x < 0 || x + WIDTH >= canvas.width) {
-      xOffset = -xOffset;
-      x += xOffset;
-    }
   }
   return draw;
 }
@@ -4241,13 +4301,13 @@ for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
   const row = createRowDrawing(y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
   rows.push(row);
 }
-setTimeout(function () {
+(0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_2__.animate)(function (elapsedTime) {
   for (const drawRow of rows) {
-    drawRow();
+    drawRow(elapsedTime);
   }
   setInterval(function () {
     for (const drawRow of rows) {
-      drawRow();
+      drawRow(elapsedTime);
     }
   }, 50);
 
@@ -4272,7 +4332,8 @@ setTimeout(function () {
   //   )
   //   context.fill()
   // }, 60000 / (128 / 2))
-}, 500);
+});
+
 function randomInteger(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -4407,7 +4468,7 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ 
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("e3536e4bd06cd0c11432")
+/******/ 	__webpack_require__.h = () => ("9c36b634d4df3e9483f5")
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/global */
