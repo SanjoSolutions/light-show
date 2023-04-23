@@ -4248,20 +4248,19 @@ function noop() { }
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
-/* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
-/* harmony import */ var _sanjo_animate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @sanjo/animate */ "./node_modules/@sanjo/animate/index.js");
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "main": () => (/* binding */ main),
+/* harmony export */   "main2": () => (/* binding */ main2)
+/* harmony export */ });
+/* harmony import */ var _sanjo_animate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/animate */ "./node_modules/@sanjo/animate/index.js");
+/* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
+/* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
 
 
 
-const {
-  context,
-  canvas
-} = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_0__.createFullDocumentCanvas)();
-document.body.append(canvas);
 const WIDTH = 50;
 const HEIGHT = 50;
-function createRowDrawing(y, color) {
+function createRowDrawing(canvas, context, y, color) {
   let xBefore = null;
   let yBefore = null;
   let x = randomInteger(0, canvas.width - WIDTH);
@@ -4291,54 +4290,68 @@ function createRowDrawing(y, color) {
   }
   return draw;
 }
-const rows = [];
-for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
-  const {
-    hue,
-    saturation,
-    lightness
-  } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_1__.randomColor)();
-  const row = createRowDrawing(y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
-  rows.push(row);
-}
-(0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_2__.animate)(function (elapsedTime) {
-  for (const drawRow of rows) {
-    drawRow(elapsedTime);
-  }
-  setInterval(function () {
-    for (const drawRow of rows) {
-      drawRow(elapsedTime);
-    }
-  }, 50);
-
-  // let x = null
-  // let y = null
-
-  // setInterval(function () {
-  //   if (typeof x === "number" && typeof y === "number") {
-  //     context.clearRect(x, y, WIDTH, HEIGHT)
-  //   }
-  //
-  //   x = randomInteger(0, canvas.width - 1 - WIDTH)
-  //   y = randomInteger(0, canvas.height - 1 - HEIGHT)
-  //
-  //   context.beginPath()
-  //   context.fillStyle = "red"
-  //   context.rect(
-  //     x,
-  //     y,
-  //     WIDTH,
-  //     HEIGHT,
-  //   )
-  //   context.fill()
-  // }, 60000 / (128 / 2))
-});
-
 function randomInteger(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
 function randomSign() {
   return randomInteger(0, 1) === 0 ? -1 : 1;
+}
+function main() {
+  const {
+    context,
+    canvas
+  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
+  document.body.append(canvas);
+  const rows = [];
+  for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
+    const {
+      hue,
+      saturation,
+      lightness
+    } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_2__.randomColor)();
+    const row = createRowDrawing(canvas, context, y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
+    rows.push(row);
+  }
+  (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+    for (const drawRow of rows) {
+      drawRow(elapsedTime);
+    }
+    setInterval(function () {
+      for (const drawRow of rows) {
+        drawRow(elapsedTime);
+      }
+    }, 50);
+
+    // let x = null
+    // let y = null
+
+    // setInterval(function () {
+    //   if (typeof x === "number" && typeof y === "number") {
+    //     context.clearRect(x, y, WIDTH, HEIGHT)
+    //   }
+    //
+    //   x = randomInteger(0, canvas.width - 1 - WIDTH)
+    //   y = randomInteger(0, canvas.height - 1 - HEIGHT)
+    //
+    //   context.beginPath()
+    //   context.fillStyle = "red"
+    //   context.rect(
+    //     x,
+    //     y,
+    //     WIDTH,
+    //     HEIGHT,
+    //   )
+    //   context.fill()
+    // }, 60000 / (128 / 2))
+  });
+}
+
+function main2() {
+  const {
+    context,
+    canvas
+  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
+  document.body.append(canvas);
 }
 
 /***/ }),
@@ -4468,7 +4481,7 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ 
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("9c36b634d4df3e9483f5")
+/******/ 	__webpack_require__.h = () => ("1b8daf39f222d1e14839")
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/global */
@@ -5472,6 +5485,9 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ __webpack_require__("./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&hostname=0.0.0.0&port=8080&pathname=%2Fws&logging=info&overlay=true&reconnect=10&hot=true&live-reload=true");
 /******/ __webpack_require__("./node_modules/webpack/hot/dev-server.js");
 /******/ var __webpack_exports__ = __webpack_require__("./src/index.js");
+/******/ var __webpack_exports__main = __webpack_exports__.main;
+/******/ var __webpack_exports__main2 = __webpack_exports__.main2;
+/******/ export { __webpack_exports__main as main, __webpack_exports__main2 as main2 };
 /******/ 
 
 //# sourceMappingURL=index.js.map
