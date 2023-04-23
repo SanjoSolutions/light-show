@@ -4198,54 +4198,126 @@ function noop() { }
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
+/* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
+
 
 const {
   context,
   canvas
 } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_0__.createFullDocumentCanvas)();
 document.body.append(canvas);
-let xBefore = null;
-let yBefore = null;
-let x = 0;
-let y = 0;
 const WIDTH = 50;
 const HEIGHT = 50;
-let xOffset = WIDTH;
-function draw() {
-  if (typeof xBefore === 'number' && typeof yBefore === 'number') {
-    context.clearRect(xBefore, yBefore, WIDTH, HEIGHT);
-  }
-  context.beginPath();
-  context.fillStyle = "blue";
-  context.rect(x, y, WIDTH, HEIGHT);
-  context.fill();
-  xBefore = x;
-  yBefore = y;
-  x += xOffset;
-  if (x < 0 || x + WIDTH >= canvas.width) {
-    xOffset = -xOffset;
-    x += xOffset;
-  }
-}
-setTimeout(function () {
-  draw();
-  setInterval(draw, 50);
-  let x = null;
-  let y = null;
-  setInterval(function () {
-    if (typeof x === 'number' && typeof y === 'number') {
-      context.clearRect(x, y, WIDTH, HEIGHT);
+function createRowDrawing(y, color) {
+  let xBefore = null;
+  let yBefore = null;
+  let x = randomInteger(0, canvas.width);
+  let xOffset = randomSign() * WIDTH;
+  function draw() {
+    if (typeof xBefore === "number" && typeof yBefore === "number") {
+      context.clearRect(xBefore, yBefore, WIDTH, HEIGHT);
     }
-    x = randomInteger(0, canvas.width - 1 - WIDTH);
-    y = randomInteger(0, canvas.height - 1 - HEIGHT);
     context.beginPath();
-    context.fillStyle = "red";
+    context.fillStyle = color;
     context.rect(x, y, WIDTH, HEIGHT);
     context.fill();
-  }, 60000 / (128 / 2));
+    xBefore = x;
+    yBefore = y;
+    x += xOffset;
+    if (x < 0 || x + WIDTH >= canvas.width) {
+      xOffset = -xOffset;
+      x += xOffset;
+    }
+  }
+  return draw;
+}
+const rows = [];
+for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
+  const {
+    hue,
+    saturation,
+    lightness
+  } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_1__.randomColor)();
+  const row = createRowDrawing(y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
+  rows.push(row);
+}
+setTimeout(function () {
+  for (const drawRow of rows) {
+    drawRow();
+  }
+  setInterval(function () {
+    for (const drawRow of rows) {
+      drawRow();
+    }
+  }, 50);
+
+  // let x = null
+  // let y = null
+
+  // setInterval(function () {
+  //   if (typeof x === "number" && typeof y === "number") {
+  //     context.clearRect(x, y, WIDTH, HEIGHT)
+  //   }
+  //
+  //   x = randomInteger(0, canvas.width - 1 - WIDTH)
+  //   y = randomInteger(0, canvas.height - 1 - HEIGHT)
+  //
+  //   context.beginPath()
+  //   context.fillStyle = "red"
+  //   context.rect(
+  //     x,
+  //     y,
+  //     WIDTH,
+  //     HEIGHT,
+  //   )
+  //   context.fill()
+  // }, 60000 / (128 / 2))
 }, 500);
 function randomInteger(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
+}
+function randomSign() {
+  return randomInteger(0, 1) === 0 ? -1 : 1;
+}
+
+/***/ }),
+
+/***/ "./src/unnamed/randomColor.js":
+/*!************************************!*\
+  !*** ./src/unnamed/randomColor.js ***!
+  \************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomColor": () => (/* binding */ randomColor)
+/* harmony export */ });
+/* harmony import */ var _randomInteger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./randomInteger.js */ "./src/unnamed/randomInteger.js");
+
+function randomColor() {
+  return {
+    hue: (0,_randomInteger_js__WEBPACK_IMPORTED_MODULE_0__.randomInteger)(0, 359),
+    saturation: 1,
+    lightness: 0.5
+  };
+}
+
+/***/ }),
+
+/***/ "./src/unnamed/randomInteger.js":
+/*!**************************************!*\
+  !*** ./src/unnamed/randomInteger.js ***!
+  \**************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "randomInteger": () => (/* binding */ randomInteger)
+/* harmony export */ });
+function randomInteger(minInclusive, maxInclusive) {
+  minInclusive = Math.floor(minInclusive);
+  maxInclusive = Math.floor(maxInclusive);
+  return minInclusive + Math.floor(Math.random() * (maxInclusive - minInclusive + 1));
 }
 
 /***/ })
@@ -4335,7 +4407,7 @@ function randomInteger(min, max) {
 /******/ 
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("2e98fefe963802f401a9")
+/******/ 	__webpack_require__.h = () => ("e3536e4bd06cd0c11432")
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/global */
