@@ -1,51 +1,25 @@
 <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Light show</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-<style>
-  body {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .light {
-    width: 50vw;
-    height: 50vh;
-  }
-</style>
-
-<div id="light1" class="light"></div>
-<div id="light2" class="light"></div>
-<div id="light3" class="light"></div>
-<div id="light4" class="light"></div>
-
-<script>
-  class Light {
-    constructor(element) {
-      this.element = element
-    }
-
-    setColor(color) {
-      this.element.style.backgroundColor = color
-    }
-  }
-
-  const light1 = new Light(document.querySelector('#light1'))
-  const light2 = new Light(document.querySelector('#light2'))
-  const light3 = new Light(document.querySelector('#light3'))
-  const light4 = new Light(document.querySelector('#light4'))
-
-  const colors = [
-    'red',
-    'white'
-  ]
-
-  let index = 0
-
-  setInterval(function () {
-    light1.setColor(colors[index])
-    index = (index + 1) % colors.length
-  }, 1000)
-</script>
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="index.js"></script>
+  </body>
+</html>
