@@ -4241,6 +4241,93 @@ function noop() { }
 
 /***/ }),
 
+/***/ "./node_modules/@sanjo/random/generateRandomFloat.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@sanjo/random/generateRandomFloat.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "generateRandomFloat": () => (/* binding */ generateRandomFloat)
+/* harmony export */ });
+/**
+ * @param min Minimum number (inclusive)
+ * @param max Maximum number (exclusive)
+ */
+function generateRandomFloat(min, max) {
+    return min + (max - min) * Math.random();
+}
+//# sourceMappingURL=generateRandomFloat.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@sanjo/random/generateRandomInteger.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@sanjo/random/generateRandomInteger.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "generateRandomInteger": () => (/* binding */ generateRandomInteger)
+/* harmony export */ });
+/* harmony import */ var _generateRandomFloat_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./generateRandomFloat.js */ "./node_modules/@sanjo/random/generateRandomFloat.js");
+
+/**
+ * @param min Minimum number (inclusive)
+ * @param max Maximum number (exclusive)
+ */
+function generateRandomInteger(min, max) {
+    min = Math.floor(min);
+    max = Math.floor(max);
+    return Math.floor((0,_generateRandomFloat_js__WEBPACK_IMPORTED_MODULE_0__.generateRandomFloat)(min, max));
+}
+//# sourceMappingURL=generateRandomInteger.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@sanjo/random/getRandomValue.js":
+/*!******************************************************!*\
+  !*** ./node_modules/@sanjo/random/getRandomValue.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getRandomValue": () => (/* binding */ getRandomValue)
+/* harmony export */ });
+/* harmony import */ var _generateRandomInteger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./generateRandomInteger.js */ "./node_modules/@sanjo/random/generateRandomInteger.js");
+
+function getRandomValue(values) {
+    return values[(0,_generateRandomInteger_js__WEBPACK_IMPORTED_MODULE_0__.generateRandomInteger)(0, values.length)];
+}
+//# sourceMappingURL=getRandomValue.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@sanjo/random/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/@sanjo/random/index.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "generateRandomFloat": () => (/* reexport safe */ _generateRandomFloat_js__WEBPACK_IMPORTED_MODULE_0__.generateRandomFloat),
+/* harmony export */   "generateRandomInteger": () => (/* reexport safe */ _generateRandomInteger_js__WEBPACK_IMPORTED_MODULE_1__.generateRandomInteger),
+/* harmony export */   "getRandomValue": () => (/* reexport safe */ _getRandomValue_js__WEBPACK_IMPORTED_MODULE_2__.getRandomValue)
+/* harmony export */ });
+/* harmony import */ var _generateRandomFloat_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./generateRandomFloat.js */ "./node_modules/@sanjo/random/generateRandomFloat.js");
+/* harmony import */ var _generateRandomInteger_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./generateRandomInteger.js */ "./node_modules/@sanjo/random/generateRandomInteger.js");
+/* harmony import */ var _getRandomValue_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getRandomValue.js */ "./node_modules/@sanjo/random/getRandomValue.js");
+
+
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -4254,7 +4341,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _sanjo_animate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/animate */ "./node_modules/@sanjo/animate/index.js");
 /* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
-/* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
+/* harmony import */ var _sanjo_random__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @sanjo/random */ "./node_modules/@sanjo/random/index.js");
+/* harmony import */ var _unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./unnamed/randomColor.js */ "./src/unnamed/randomColor.js");
+
 
 
 
@@ -4290,6 +4379,44 @@ function createRowDrawing(canvas, context, y, color) {
   }
   return draw;
 }
+function createRowDrawing2(canvas, context, y, color) {
+  let xBefore = null;
+  let yBefore = null;
+  let angle = (0,_sanjo_random__WEBPACK_IMPORTED_MODULE_2__.generateRandomFloat)(0, 2 * Math.PI);
+  let x = randomInteger(0, canvas.width - WIDTH);
+  const OFFSET = 1;
+  let xOffset = randomSign() * OFFSET;
+  const angleOffset = 2 * Math.PI / 360 / 10;
+  function draw(elapsedTime) {
+    if (elapsedTime) {
+      x += 0.025 * elapsedTime * xOffset;
+      if (x < 0) {
+        xOffset = OFFSET;
+        x += xOffset;
+      }
+      if (x + WIDTH >= canvas.width) {
+        xOffset = -OFFSET;
+        x += xOffset;
+      }
+      if (xOffset > 0) {
+        angle += angleOffset;
+      } else if (xOffset < 0) {
+        angle -= angleOffset;
+      }
+    }
+    context.save();
+    context.translate(Math.round(x) + 0.5 * WIDTH, y + 0.5 * HEIGHT);
+    context.rotate(angle);
+    context.beginPath();
+    context.fillStyle = color;
+    context.rect(-0.5 * WIDTH, -0.5 * HEIGHT, WIDTH, HEIGHT);
+    context.fill();
+    context.restore();
+    xBefore = x;
+    yBefore = y;
+  }
+  return draw;
+}
 function randomInteger(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -4308,7 +4435,7 @@ function main() {
       hue,
       saturation,
       lightness
-    } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_2__.randomColor)();
+    } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_3__.randomColor)();
     const row = createRowDrawing(canvas, context, y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
     rows.push(row);
   }
@@ -4317,6 +4444,7 @@ function main() {
       drawRow(elapsedTime);
     }
     setInterval(function () {
+      context.clearRect(0, 0, canvas.width, canvas.height);
       for (const drawRow of rows) {
         drawRow(elapsedTime);
       }
@@ -4352,6 +4480,27 @@ function main2() {
     canvas
   } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
   document.body.append(canvas);
+  const rows = [];
+  for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
+    const {
+      hue,
+      saturation,
+      lightness
+    } = (0,_unnamed_randomColor_js__WEBPACK_IMPORTED_MODULE_3__.randomColor)();
+    const row = createRowDrawing2(canvas, context, y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
+    rows.push(row);
+  }
+  (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+    for (const drawRow of rows) {
+      drawRow(elapsedTime);
+    }
+    setInterval(function () {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      for (const drawRow of rows) {
+        drawRow(elapsedTime);
+      }
+    }, 50);
+  });
 }
 
 /***/ }),
@@ -4481,7 +4630,7 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ 
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("1b8daf39f222d1e14839")
+/******/ 	__webpack_require__.h = () => ("df8b6d1f720e656dbfb2")
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/global */
