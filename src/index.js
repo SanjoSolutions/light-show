@@ -21,7 +21,7 @@ function createRowDrawing(canvas, context, y, color) {
     }
 
     if (elapsedTime) {
-      x += 0.025 * elapsedTime * xOffset
+      x += 0.10 * elapsedTime * xOffset
       if (x < 0) {
         xOffset = OFFSET
         x += xOffset
@@ -54,11 +54,11 @@ function createRowDrawing2(canvas, context, y, color) {
   const OFFSET = 1
   let xOffset = randomSign() * OFFSET
 
-  const angleOffset = 2 * Math.PI / 360 / 10
+  const angleOffset = 2 * Math.PI / 360
 
   function draw(elapsedTime) {
     if (elapsedTime) {
-      x += 0.025 * elapsedTime * xOffset
+      x += 0.10 * elapsedTime * xOffset
       if (x < 0) {
         xOffset = OFFSET
         x += xOffset
@@ -102,10 +102,7 @@ function randomSign() {
   return randomInteger(0, 1) === 0 ? -1 : 1
 }
 
-export function main() {
-  const { context, canvas } = createFullDocumentCanvas()
-  document.body.append(canvas)
-
+function animate1(canvas, context) {
   const rows = []
   for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
     const { hue, saturation, lightness } = randomColor()
@@ -118,46 +115,16 @@ export function main() {
     rows.push(row)
   }
 
-  animate(function (elapsedTime) {
+  return animate(function (elapsedTime) {
+    context.clearRect(0, 0, canvas.width, canvas.height)
+
     for (const drawRow of rows) {
       drawRow(elapsedTime)
     }
-    setInterval(function () {
-      context.clearRect(0, 0, canvas.width, canvas.height)
-
-      for (const drawRow of rows) {
-        drawRow(elapsedTime)
-      }
-    }, 50)
-
-    // let x = null
-    // let y = null
-
-    // setInterval(function () {
-    //   if (typeof x === "number" && typeof y === "number") {
-    //     context.clearRect(x, y, WIDTH, HEIGHT)
-    //   }
-    //
-    //   x = randomInteger(0, canvas.width - 1 - WIDTH)
-    //   y = randomInteger(0, canvas.height - 1 - HEIGHT)
-    //
-    //   context.beginPath()
-    //   context.fillStyle = "red"
-    //   context.rect(
-    //     x,
-    //     y,
-    //     WIDTH,
-    //     HEIGHT,
-    //   )
-    //   context.fill()
-    // }, 60000 / (128 / 2))
   })
 }
 
-export function main2() {
-  const { context, canvas } = createFullDocumentCanvas()
-  document.body.append(canvas)
-
+function animate2(canvas, context) {
   const rows = []
   for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
     const { hue, saturation, lightness } = randomColor()
@@ -170,16 +137,53 @@ export function main2() {
     rows.push(row)
   }
 
-  animate(function (elapsedTime) {
+  return animate(function (elapsedTime) {
+    context.clearRect(0, 0, canvas.width, canvas.height)
+
     for (const drawRow of rows) {
       drawRow(elapsedTime)
     }
-    setInterval(function () {
-      context.clearRect(0, 0, canvas.width, canvas.height)
-
-      for (const drawRow of rows) {
-        drawRow(elapsedTime)
-      }
-    }, 50)
   })
+}
+
+export function main() {
+  const { context, canvas } = createFullDocumentCanvas()
+  document.body.append(canvas)
+
+  animate1(canvas, context)
+}
+
+export function main2() {
+  const { context, canvas } = createFullDocumentCanvas()
+  document.body.append(canvas)
+
+  animate2(canvas, context)
+}
+
+export function main3() {
+  const { context, canvas } = createFullDocumentCanvas()
+  document.body.append(canvas)
+
+  const animations = [
+    animate1,
+    animate2,
+  ]
+
+  let currentIndex = 0
+  let stop = null
+
+  function startCurrentAnimation() {
+    stop = animations[currentIndex](canvas, context).stop
+  }
+
+  startCurrentAnimation()
+
+  setInterval(function () {
+    if (stop) {
+      stop()
+    }
+
+    currentIndex = (currentIndex + 1) % animations.length
+    startCurrentAnimation()
+  }, 5000)
 }

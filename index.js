@@ -4337,7 +4337,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "main": () => (/* binding */ main),
-/* harmony export */   "main2": () => (/* binding */ main2)
+/* harmony export */   "main2": () => (/* binding */ main2),
+/* harmony export */   "main3": () => (/* binding */ main3)
 /* harmony export */ });
 /* harmony import */ var _sanjo_animate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @sanjo/animate */ "./node_modules/@sanjo/animate/index.js");
 /* harmony import */ var _sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @sanjo/canvas */ "./node_modules/@sanjo/canvas/index.js");
@@ -4360,7 +4361,7 @@ function createRowDrawing(canvas, context, y, color) {
       context.clearRect(Math.round(xBefore), yBefore, WIDTH, HEIGHT);
     }
     if (elapsedTime) {
-      x += 0.025 * elapsedTime * xOffset;
+      x += 0.10 * elapsedTime * xOffset;
       if (x < 0) {
         xOffset = OFFSET;
         x += xOffset;
@@ -4386,10 +4387,10 @@ function createRowDrawing2(canvas, context, y, color) {
   let x = randomInteger(0, canvas.width - WIDTH);
   const OFFSET = 1;
   let xOffset = randomSign() * OFFSET;
-  const angleOffset = 2 * Math.PI / 360 / 10;
+  const angleOffset = 2 * Math.PI / 360;
   function draw(elapsedTime) {
     if (elapsedTime) {
-      x += 0.025 * elapsedTime * xOffset;
+      x += 0.10 * elapsedTime * xOffset;
       if (x < 0) {
         xOffset = OFFSET;
         x += xOffset;
@@ -4423,12 +4424,7 @@ function randomInteger(min, max) {
 function randomSign() {
   return randomInteger(0, 1) === 0 ? -1 : 1;
 }
-function main() {
-  const {
-    context,
-    canvas
-  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
-  document.body.append(canvas);
+function animate1(canvas, context) {
   const rows = [];
   for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
     const {
@@ -4439,47 +4435,14 @@ function main() {
     const row = createRowDrawing(canvas, context, y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
     rows.push(row);
   }
-  (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+  return (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
     for (const drawRow of rows) {
       drawRow(elapsedTime);
     }
-    setInterval(function () {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      for (const drawRow of rows) {
-        drawRow(elapsedTime);
-      }
-    }, 50);
-
-    // let x = null
-    // let y = null
-
-    // setInterval(function () {
-    //   if (typeof x === "number" && typeof y === "number") {
-    //     context.clearRect(x, y, WIDTH, HEIGHT)
-    //   }
-    //
-    //   x = randomInteger(0, canvas.width - 1 - WIDTH)
-    //   y = randomInteger(0, canvas.height - 1 - HEIGHT)
-    //
-    //   context.beginPath()
-    //   context.fillStyle = "red"
-    //   context.rect(
-    //     x,
-    //     y,
-    //     WIDTH,
-    //     HEIGHT,
-    //   )
-    //   context.fill()
-    // }, 60000 / (128 / 2))
   });
 }
-
-function main2() {
-  const {
-    context,
-    canvas
-  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
-  document.body.append(canvas);
+function animate2(canvas, context) {
   const rows = [];
   for (let y = 0; y <= canvas.height - HEIGHT; y += HEIGHT) {
     const {
@@ -4490,17 +4453,49 @@ function main2() {
     const row = createRowDrawing2(canvas, context, y, `hsl(${hue}deg ${saturation * 100}% ${lightness * 100}%)`);
     rows.push(row);
   }
-  (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+  return (0,_sanjo_animate__WEBPACK_IMPORTED_MODULE_0__.animate)(function (elapsedTime) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
     for (const drawRow of rows) {
       drawRow(elapsedTime);
     }
-    setInterval(function () {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      for (const drawRow of rows) {
-        drawRow(elapsedTime);
-      }
-    }, 50);
   });
+}
+function main() {
+  const {
+    context,
+    canvas
+  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
+  document.body.append(canvas);
+  animate1(canvas, context);
+}
+function main2() {
+  const {
+    context,
+    canvas
+  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
+  document.body.append(canvas);
+  animate2(canvas, context);
+}
+function main3() {
+  const {
+    context,
+    canvas
+  } = (0,_sanjo_canvas__WEBPACK_IMPORTED_MODULE_1__.createFullDocumentCanvas)();
+  document.body.append(canvas);
+  const animations = [animate1, animate2];
+  let currentIndex = 0;
+  let stop = null;
+  function startCurrentAnimation() {
+    stop = animations[currentIndex](canvas, context).stop;
+  }
+  startCurrentAnimation();
+  setInterval(function () {
+    if (stop) {
+      stop();
+    }
+    currentIndex = (currentIndex + 1) % animations.length;
+    startCurrentAnimation();
+  }, 5000);
 }
 
 /***/ }),
@@ -4630,7 +4625,7 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ 
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("df8b6d1f720e656dbfb2")
+/******/ 	__webpack_require__.h = () => ("104d599b9e4c7a82c39e")
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/global */
@@ -5636,7 +5631,8 @@ function randomInteger(minInclusive, maxInclusive) {
 /******/ var __webpack_exports__ = __webpack_require__("./src/index.js");
 /******/ var __webpack_exports__main = __webpack_exports__.main;
 /******/ var __webpack_exports__main2 = __webpack_exports__.main2;
-/******/ export { __webpack_exports__main as main, __webpack_exports__main2 as main2 };
+/******/ var __webpack_exports__main3 = __webpack_exports__.main3;
+/******/ export { __webpack_exports__main as main, __webpack_exports__main2 as main2, __webpack_exports__main3 as main3 };
 /******/ 
 
 //# sourceMappingURL=index.js.map
