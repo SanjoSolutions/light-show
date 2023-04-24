@@ -10,6 +10,7 @@
     "@sanjo/random": "^2.0.0",
     "@sanjo/webpack": "^2.1.0",
     "@webpack-cli/serve": "^1.6.0",
+    "three": "^0.151.3",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.7.2"
